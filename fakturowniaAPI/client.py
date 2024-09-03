@@ -9,6 +9,66 @@ class Product:
     tax : float
 
 
+class Issuer:
+    def __init__(self,seller_name : str,
+                      seller_tax_no : str,
+                      seller_tax_no_kind : str,
+                      seller_bank_account : str,
+                      seller_bank : str,
+                      seller_post_code : str,
+                      seller_city : str,
+                      seller_street : str,
+                      seller_country : str,
+                      invoice_issuer: str,
+                      seller_email : Optional[str] = "",
+                      seller_www : Optional[str] = "",
+                      seller_fax : Optional[str] = "",
+                      seller_phone : Optional[str] = "",
+                      seller_bd_no : Optional[str] = ""):
+        self.seller_name = seller_name
+        self.seller_tax_no = seller_tax_no
+        self.seller_tax_no_kind = seller_tax_no_kind
+        self.seller_bank_account = seller_bank_account
+        self.seller_bank = seller_bank
+        self.seller_post_code = seller_post_code
+        self.seller_city = seller_city
+        self.seller_street = seller_street
+        self.seller_country = seller_country
+        self.invoice_issuer = invoice_issuer
+        self.seller_email = seller_email
+        self.seller_www = seller_www
+        self.seller_fax = seller_fax
+        self.seller_phone = seller_phone
+        self.seller_bd_no = seller_bd_no
+
+        self.customerDict = {
+            "seller_name": self.seller_name,
+            "seller_tax_no": self.seller_tax_no,
+            "seller_tax_no_kind": self.seller_tax_no_kind,
+            "seller_bank_account": self.seller_bank_account,
+            "seller_bank": self.seller_bank,
+            "seller_post_code": self.seller_post_code,
+            "seller_city": self.seller_city,
+            "seller_street": self.seller_street,
+            "seller_country": self.seller_country,
+            "invoice_issuer": self.invoice_issuer,
+            "seller_email": self.seller_email,
+            "seller_www": self.seller_www,
+            "seller_fax": self.seller_fax,
+            "seller_phone": self.seller_phone,
+            "seller_bd_no": self.seller_bd_no
+        }
+
+
+    def updateValue(self):
+        pass
+
+    def deleteValue(self):
+        pass
+
+
+
+
 
 class Client:
 
@@ -20,48 +80,6 @@ class Client:
     def __init__(self,api_token : str,domain : str):
         self.api_token = api_token
         self.domain = domain
-
-
-
-    def addInvoice(self,
-                   sell_date : str,
-                   issue_date : str,
-                   payment_to : str,
-                   seller_name : str,
-                   seller_tax_no: str,
-                   buyer_name : str,
-                   buyer_email : str,
-                   kind:Kind ,
-                   products : [Product],
-                   buyer_tax_no : Optional[str] = "",
-                   number : Optional[str] = None,
-                   ):
-        #####
-
-
-        url_data = {
-            "api_token":self.api_token,
-            "invoice":{
-                "kind":kind,
-                "number":number,
-                "sell_date":sell_date,
-                "issue_date": issue_date,
-                "payment_to": payment_to,
-                "seller_name": seller_name,
-                "seller_tax_no": seller_tax_no,
-                "buyer_name": buyer_name,
-                "buyer_email": buyer_email,
-                "buyer_tax_no": buyer_tax_no,
-                "positions": products
-            }
-        }
-        url = f"https://{self.domain}.fakturownia.pl/invoices.json"
-        try:
-            p = requests.post(url,headers=self.url_headers,json=url_data)
-        except requests.exceptions.ProxyError:
-            raise errors.fakturowniaAPIError
-        else:
-            return p
 
     def addCustomer(self,
                     name : str,
@@ -187,6 +205,15 @@ class Client:
             raise errors.fakturowniaAPIError("Blad podczas")
         return jsoned_text
 
+    def deleteCustomer(self,client_id : int):
+        url = f"https://{self.domain}.fakturownia.pl/clients/{client_id}.json?api_token={self.api_token}"
+
+        d = requests.delete(url,headers=self.url_headers)
+
+
+        return d
+
+
     def getCustomer(self,tax_no : Optional[str] = "", id : Optional[int] = '',name : Optional[str] = ""):
         if tax_no != "":
             filter_value = tax_no
@@ -205,3 +232,110 @@ class Client:
                 return client
 
         return f"Nie znaleziono klienta o filtrze '{filter_field}:{filter_value}'"
+
+    def setIssuerData(self,
+                      seller_name : str,
+                      seller_tax_no : str,
+                      seller_tax_no_kind : str,
+                      seller_bank_account : str,
+                      seller_bank : str,
+                      seller_post_code : str,
+                      seller_city : str,
+                      seller_street : str,
+                      seller_country : str,
+                      invoice_issuer: str,
+                      seller_email : Optional[str] = "",
+                      seller_www : Optional[str] = "",
+                      seller_fax : Optional[str] = "",
+                      seller_phone : Optional[str] = "",
+                      seller_bd_no : Optional[str] = ""
+                      ):
+
+        newCustomer = Issuer(seller_name,seller_tax_no,seller_tax_no_kind,seller_bank_account,seller_bank,seller_post_code,seller_city,seller_street,seller_country,invoice_issuer,
+                               seller_email,seller_www,seller_fax,seller_phone,seller_bd_no)
+
+
+        return newCustomer
+
+
+    def addProduct(self,
+                   name: str,
+                   code: str,
+                   price_net: str,
+                   tax: str,
+                   ean_code: Optional[str] = None,
+                   description: Optional[str] = None,
+                   price_gross: Optional[str] = None,
+                   currency: Optional[str] = None,
+                   category_id: Optional[str] = None,
+                   tag_list: Optional[List[str]] = None,
+                   service: Optional[str] = None,
+                   electronic_service: Optional[str] = None,
+                   gtu_codes: Optional[str] = None,
+                   limited: Optional[str] = None,
+                   stock_level: Optional[str] = None,
+                   purchase_price_net: Optional[str] = None,
+                   purchase_tax: Optional[str] = None,
+                   purchase_price_gross: Optional[str] = None,
+                   package: Optional[str] = None,
+                   quantity_unit: Optional[str] = None,
+                   quantity: Optional[str] = None,
+                   additional_info: Optional[str] = None,
+                   supplier_code: Optional[str] = None,
+                   accounting_id: Optional[str] = None,
+                   disabled: Optional[str] = None,
+                   use_moss: Optional[str] = None,
+                   use_product_warehouses: Optional[str] = None,
+                   size: Optional[str] = None,
+                   size_width: Optional[str] = None,
+                   size_height: Optional[str] = None,
+                   size_unit: Optional[str] = None,
+                   weight: Optional[str] = None,
+                   weight_unit: Optional[str] = None
+                   ):
+        url = f"https://{self.domain}.fakturownia.pl/products.json"
+
+        url_json = {
+            "api_token":self.api_token,
+            "product":{
+                "name": name,
+            "code": code,
+            "price_net": price_net,
+            "tax": tax,
+            "ean_code": ean_code,
+            "description": description,
+            "price_gross": price_gross,
+            "currency": currency,
+            "category_id": category_id,
+            "tag_list": tag_list,
+            "service": service,
+            "electronic_service": electronic_service,
+            "gtu_codes": gtu_codes,
+            "limited": limited,
+            "stock_level": stock_level,
+            "purchase_price_net": purchase_price_net,
+            "purchase_tax": purchase_tax,
+            "purchase_price_gross": purchase_price_gross,
+            "package": package,
+            "quantity_unit": quantity_unit,
+            "quantity": quantity,
+            "additional_info": additional_info,
+            "supplier_code": supplier_code,
+            "accounting_id": accounting_id,
+            "disabled": disabled,
+            "use_moss": use_moss,
+            "use_product_warehouses": use_product_warehouses,
+            "size": size,
+            "size_width": size_width,
+            "size_height": size_height,
+            "size_unit": size_unit,
+            "weight": weight,
+            "weight_unit": weight_unit
+            }
+        }
+
+        p = requests.post(url,headers=self.url_headers,json=url_json)
+
+        return p
+
+

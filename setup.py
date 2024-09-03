@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='fakturowniaAPI',  # nazwa pakietu
+    name='fakturownia-python-api',  # nazwa pakietu
     version='0.1',  # wersja pakietu
-    #author='Twoje Imię',  # autor pakietu
-    #author_email='twojemail@example.com',  # e-mail autora
-    description='python api',  # krótki opis
+    author='Michał Ogórek',  # autor pakietu
+    author_email='michal.ogorek03@gmail.com',  # e-mail autora
+    description='python library for fakturownia',  # krótki opis
     long_description=open('README.md').read(),  # dłuższy opis (np. z README)
     long_description_content_type='text/markdown',
     #url='https://github.com/twojprofil/mypackage',  # link do repozytorium (opcjonalnie)
